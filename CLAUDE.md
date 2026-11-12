@@ -31,16 +31,20 @@ pushing.
 ## Architecture
 
 ```
-index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
-src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
+index.js                          SDK wiring only: registerHandlers, connect, shutdown
+src/app.js                        registers every SDK handler on the monitor (tests use it too)
+src/monitor.js                    followed stations, hourly cycle, states, connection status
+src/awdb.js                       AWDB REST client (stations, hourly data, daily median), dates, new snow
+src/devices.js                    one device per station: features, units, external ids
+src/search.js                     "Find stations" action (manifest `actions`)
+src/widgets.js                    `snowpack` dashboard widget (manifest `widgets`)
+src/messages.js                   texts sent from the container, four languages
 src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
-gladys-assistant-integration.json manifest: name, config_schema, actions, image...
-docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
-test/                             node --test, against the SDK's fake Gladys (integration-sdk/testing)
+src/http.js, src/geo.js           JSON GET with timeout; great-circle distance
+gladys-assistant-integration.json manifest: name, config_schema, actions, widgets, image...
+docs/{en,fr,de,es}.md             user documentation, re-hosted by Gladys
+test/                             node --test, against the SDK's fake Gladys and a fake AWDB
+test/fixtures/awdb/               real AWDB answers of 12/11/2026 (not formatted by Prettier)
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
 
@@ -251,3 +255,23 @@ long, et sur un « Sie »/« Ihr… » de politesse en allemand. Le store exige 
 - Docs `en`, `fr`, `de`, `es` avec les mêmes sections.
 - Chauffe, ouverture, sécurité : ne rien rendre pilotable « comme un thermostat » ou par un assistant
   vocal quand une erreur serait dangereuse (leçon d'OctoPrint).
+
+## SNOTEL et l'API AWDB (12/11/2026)
+
+- API : `https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1`, sans clé. `/stations` (liste ou
+  métadonnées avec `returnStationElements=true`), `/data` (`duration=HOURLY` ou `DAILY` avec
+  `centralTendencyType=MEDIAN`). La liste SNOTEL active : `stationTriplets=*:*:SNTL&activeOnly=true`
+  (919 stations ; `networkCds=SNTL` est ignoré).
+- **Pare-feu capricieux** : un 403 HTML tombe sur des rafales de requêtes (et, une fois, sur des
+  paramètres en plus comme `returnReservoirMetadata`). Ne rien envoyer de superflu, au plus trois
+  requêtes par heure, et traiter le 403 comme passager (nouvel essai au cycle suivant).
+- **Dates** en heure **normale** de la station : `dataTimeZone` (−8 pour presque tout SNOTEL, Colorado
+  compris ; −9 en Alaska). Les heures manquantes sont absentes, pas nulles ; un élément déclaré
+  dans les métadonnées peut ne renvoyer aucune valeur (SNWD de Horse Meadow, CA).
+- La médiane n'existe qu'en `DAILY` (WTEQ), et pas pour toutes les stations (Alaska) ; la valeur
+  journalière du jour n'arrive que le lendemain : fraîcheur de 3 jours pour le pourcentage.
+- Pas d'intégration Home Assistant officielle équivalente : rien à reprendre en fixtures.
+- Unités : la fonctionnalité garde l'unité de sa création ; les états sont convertis dans l'unité
+  de la fonctionnalité existante (`Monitor.unitOf`), pas dans celle des réglages.
+- Pas de déclencheur ni d'action de scène : les seuils du cœur sur « Neige fraîche (24 h) » et
+  « % de la médiane » couvrent l'usage (consigne du brief).

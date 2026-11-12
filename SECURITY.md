@@ -30,6 +30,17 @@ Gladys before reporting a problem.
 
 In scope: the code of this repository and the Docker image it publishes.
 
+What the integration handles:
+
+- **Stored in `/data`**: nothing. The readings and the station metadata live in
+  memory and are asked again to NRCS after a restart. No secret, no account,
+  no token: the service needs none. The **house coordinates** are read from
+  Gladys (manifest `location: true`) only to find the nearest stations inside
+  the container; they are never sent, stored nor logged.
+- **Network**: HTTPS GET requests to one public service only, the AWDB API of
+  the USDA NRCS (`wcc.sc.egov.usda.gov`), at most three an hour plus the
+  station list once a week, with an identifying User-Agent.
+
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
 and the third-party services and devices the integration talks to.

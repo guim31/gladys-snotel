@@ -1,8 +1,8 @@
 {
-  "name": "gladys-integration-template-js",
+  "name": "gladys-snotel",
   "version": "1.0.0",
   "private": true,
-  "description": "Official starter template to build an external integration for Gladys Assistant with the JavaScript SDK.",
+  "description": "SNOTEL snowpack stations of the USDA NRCS for Gladys Assistant: snow depth, snow water equivalent, new snow.",
   "type": "module",
   "main": "index.js",
   "scripts": {
