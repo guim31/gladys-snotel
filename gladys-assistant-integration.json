@@ -1,177 +1,521 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "SNOTEL",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Snow depth, snow water and new snow from the USDA SNOTEL mountain stations (western US, Alaska).",
+    "fr": "Hauteur de neige, équivalent en eau et neige fraîche des stations SNOTEL de l'USDA (Ouest des USA).",
+    "de": "Schneehöhe, Schneewasser und Neuschnee der SNOTEL-Bergstationen des USDA (Westen der USA, Alaska).",
+    "es": "Espesor de nieve, agua de la nieve y nieve nueva de las estaciones SNOTEL del USDA (oeste de EEUU)."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
-  "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "docker_image": "ghcr.io/guim31/gladys-snotel:1.0.0",
+  "gladys_version": ">=5.3.0",
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-snotel/main/cover.png",
+  "categories": ["environment"],
+  "countries": ["US"],
+  "transports": ["cloud"],
+  "location": true,
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "Your stations",
+        "fr": "Vos stations",
+        "de": "Deine Stationen",
+        "es": "Sus estaciones"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Follow the SNOTEL snow stations of the USDA NRCS (western United States and Alaska): by triplet, number or name, or the nearest ones to your house. \"Find stations\" below lists them by state. Save, then create the devices in the Discover tab.",
+        "fr": "Suivez les stations d'enneigement SNOTEL de l'USDA NRCS (Ouest des États-Unis et Alaska) : par triplet, numéro ou nom, ou les plus proches de votre maison. « Chercher des stations » ci-dessous les liste par État. Enregistrez, puis créez les appareils dans l'onglet Découverte.",
+        "de": "Verfolge die SNOTEL-Schneestationen des USDA NRCS (Westen der USA und Alaska): per Triplet, Nummer oder Name, oder die nächsten zu deinem Haus. „Stationen suchen“ unten listet sie nach Bundesstaat auf. Speichere und lege dann die Geräte im Tab „Entdecken“ an.",
+        "es": "Siga las estaciones de nieve SNOTEL del USDA NRCS (oeste de Estados Unidos y Alaska): por triplete, número o nombre, o las más cercanas a su casa. «Buscar estaciones» más abajo las enumera por estado. Guarde y cree los dispositivos en la pestaña Descubrir."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://github.com/guim31/gladys-snotel/blob/main/docs/en.md",
+          "label": {
+            "en": "Setup guide",
+            "fr": "Guide d'installation",
+            "de": "Installationsanleitung",
+            "es": "Guía de instalación"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "key": "about",
+      "type": "section",
+      "label": {
+        "en": "Sources and limits",
+        "fr": "Sources et limites",
+        "de": "Quellen und Grenzen",
+        "es": "Fuentes y límites"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
-    },
-    {
-      "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
       "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+        "en": "Data: SNOTEL network of the USDA Natural Resources Conservation Service, public domain, read without an account from the AWDB API. Provisional hourly values, not an avalanche or flood warning: official forecasts prevail. Not affiliated with the USDA or NRCS.",
+        "fr": "Données : réseau SNOTEL du Natural Resources Conservation Service de l'USDA, domaine public, lues sans compte via l'API AWDB. Valeurs horaires provisoires, pas une alerte avalanche ou crue : les bulletins officiels priment. Non affiliée à l'USDA ni au NRCS.",
+        "de": "Daten: SNOTEL-Netz des Natural Resources Conservation Service des USDA, gemeinfrei, ohne Konto über die AWDB-API gelesen. Vorläufige Stundenwerte, keine Lawinen- oder Hochwasserwarnung: Die amtlichen Berichte haben Vorrang. Nicht mit dem USDA oder dem NRCS verbunden.",
+        "es": "Datos: red SNOTEL del Natural Resources Conservation Service del USDA, dominio público, leídos sin cuenta a través de la API AWDB. Valores horarios provisionales, no una alerta de aludes o crecidas: prevalecen los boletines oficiales. Sin afiliación con el USDA ni el NRCS."
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
-    },
-    {
-      "key": "unit",
-      "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
-      "required": false,
-      "default": "celsius",
-      "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+      "links": [
+        {
+          "url": "https://www.nrcs.usda.gov/resources/data-and-reports/snow-and-climate-monitoring-snotel",
+          "label": {
+            "en": "SNOTEL website",
+            "fr": "Site SNOTEL",
+            "de": "Website von SNOTEL",
+            "es": "Sitio web de SNOTEL"
+          }
+        }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "stations",
+      "type": "string",
+      "label": {
+        "en": "Stations",
+        "fr": "Stations",
+        "de": "Stationen",
+        "es": "Estaciones"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Station triplets, numbers or names, separated by commas.",
+        "fr": "Triplets, numéros ou noms de stations, séparés par des virgules.",
+        "de": "Triplets, Nummern oder Namen von Stationen, durch Kommas getrennt.",
+        "es": "Tripletes, números o nombres de estaciones, separados por comas."
+      },
+      "placeholder": {
+        "en": "e.g. 1050:CA:SNTL, 766, Paradise",
+        "fr": "ex. 1050:CA:SNTL, 766, Paradise",
+        "de": "z. B. 1050:CA:SNTL, 766, Paradise",
+        "es": "p. ej. 1050:CA:SNTL, 766, Paradise"
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": ""
+    },
+    {
+      "key": "around_home",
+      "type": "select",
+      "label": {
+        "en": "Around my house",
+        "fr": "Autour de ma maison",
+        "de": "Rund um mein Haus",
+        "es": "Alrededor de mi casa"
+      },
+      "description": {
+        "en": "Also follow the 3 nearest SNOTEL stations, within this distance of the location of your house in Gladys.",
+        "fr": "Suivre aussi les 3 stations SNOTEL les plus proches, à cette distance au plus de la position de votre maison dans Gladys.",
+        "de": "Verfolge auch die 3 nächsten SNOTEL-Stationen, höchstens so weit vom Standort deines Hauses in Gladys entfernt.",
+        "es": "Seguir también las 3 estaciones SNOTEL más cercanas, como máximo a esta distancia de la ubicación de su casa en Gladys."
+      },
+      "required": false,
+      "default": "0",
+      "options": [
+        {
+          "value": "0",
+          "label": {
+            "en": "No",
+            "fr": "Non",
+            "de": "Nein",
+            "es": "No"
+          }
+        },
+        {
+          "value": "50",
+          "label": {
+            "en": "Within 50 km",
+            "fr": "À 50 km",
+            "de": "Im Umkreis von 50 km",
+            "es": "A 50 km"
+          }
+        },
+        {
+          "value": "100",
+          "label": {
+            "en": "Within 100 km",
+            "fr": "À 100 km",
+            "de": "Im Umkreis von 100 km",
+            "es": "A 100 km"
+          }
+        },
+        {
+          "value": "200",
+          "label": {
+            "en": "Within 200 km",
+            "fr": "À 200 km",
+            "de": "Im Umkreis von 200 km",
+            "es": "A 200 km"
+          }
+        }
+      ]
+    },
+    {
+      "key": "units",
+      "type": "select",
+      "label": {
+        "en": "Units",
+        "fr": "Unités",
+        "de": "Einheiten",
+        "es": "Unidades"
+      },
+      "description": {
+        "en": "Units of new devices: cm, mm and °C, or inches and °F as NRCS publishes them. An existing device keeps its units.",
+        "fr": "Unités des nouveaux appareils : cm, mm et °C, ou pouces et °F comme les publie le NRCS. Un appareil existant garde ses unités.",
+        "de": "Einheiten neuer Geräte: cm, mm und °C oder Zoll und °F wie beim NRCS. Ein vorhandenes Gerät behält seine Einheiten.",
+        "es": "Unidades de los nuevos dispositivos: cm, mm y °C, o pulgadas y °F como los publica el NRCS. Un dispositivo existente conserva sus unidades."
+      },
+      "required": false,
+      "default": "metric",
+      "options": [
+        {
+          "value": "metric",
+          "label": {
+            "en": "Metric (cm, mm, °C)",
+            "fr": "Métriques (cm, mm, °C)",
+            "de": "Metrisch (cm, mm, °C)",
+            "es": "Métricas (cm, mm, °C)"
+          }
+        },
+        {
+          "value": "imperial",
+          "label": {
+            "en": "Imperial (in, °F)",
+            "fr": "Impériales (pouces, °F)",
+            "de": "Imperial (Zoll, °F)",
+            "es": "Imperiales (pulgadas, °F)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the feature names",
+        "fr": "Langue des noms de fonctionnalités",
+        "de": "Sprache der Funktionsnamen",
+        "es": "Idioma de los nombres de las funciones"
+      },
+      "description": {
+        "en": "Names given to the features of new devices (Snow depth, New snow…), and language of their texts.",
+        "fr": "Noms donnés aux fonctionnalités des nouveaux appareils (Hauteur de neige, Neige fraîche…), et langue de leurs textes.",
+        "de": "Namen der Funktionen neuer Geräte (Schneehöhe, Neuschnee…) und Sprache ihrer Texte.",
+        "es": "Nombres de las funciones de los nuevos dispositivos (Espesor de nieve, Nieve nueva…) e idioma de sus textos."
+      },
+      "required": false,
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
-      "timeout_seconds": 30
-    },
-    {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ]
-    }
-  ],
-  "scene_triggers": [
-    {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
-      "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+      "key": "search_stations",
+      "label": {
+        "en": "Find stations",
+        "fr": "Chercher des stations",
+        "de": "Stationen suchen",
+        "es": "Buscar estaciones"
       },
+      "description": {
+        "en": "Lists SNOTEL stations with their triplet, state, elevation and distance: by state, by name or number, or around your house.",
+        "fr": "Liste les stations SNOTEL avec leur triplet, leur État, leur altitude et leur distance : par État, par nom ou numéro, ou autour de votre maison.",
+        "de": "Listet SNOTEL-Stationen mit Triplet, Bundesstaat, Höhe und Entfernung auf: nach Bundesstaat, Name oder Nummer, oder rund um dein Haus.",
+        "es": "Enumera las estaciones SNOTEL con su triplete, estado, altitud y distancia: por estado, por nombre o número, o alrededor de su casa."
+      },
+      "timeout_seconds": 60,
       "fields": [
         {
-          "key": "device",
+          "key": "state",
           "type": "select",
-          "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
+          "label": {
+            "en": "State",
+            "fr": "État",
+            "de": "Bundesstaat",
+            "es": "Estado"
+          },
+          "description": {
+            "en": "Optional: the stations of one state.",
+            "fr": "Facultatif : les stations d'un État.",
+            "de": "Optional: die Stationen eines Bundesstaats.",
+            "es": "Opcional: las estaciones de un estado."
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "AK",
+              "label": {
+                "en": "Alaska",
+                "fr": "Alaska",
+                "de": "Alaska",
+                "es": "Alaska"
+              }
+            },
+            {
+              "value": "AZ",
+              "label": {
+                "en": "Arizona",
+                "fr": "Arizona",
+                "de": "Arizona",
+                "es": "Arizona"
+              }
+            },
+            {
+              "value": "CA",
+              "label": {
+                "en": "California",
+                "fr": "Californie",
+                "de": "Kalifornien",
+                "es": "California"
+              }
+            },
+            {
+              "value": "CO",
+              "label": {
+                "en": "Colorado",
+                "fr": "Colorado",
+                "de": "Colorado",
+                "es": "Colorado"
+              }
+            },
+            {
+              "value": "ID",
+              "label": {
+                "en": "Idaho",
+                "fr": "Idaho",
+                "de": "Idaho",
+                "es": "Idaho"
+              }
+            },
+            {
+              "value": "MT",
+              "label": {
+                "en": "Montana",
+                "fr": "Montana",
+                "de": "Montana",
+                "es": "Montana"
+              }
+            },
+            {
+              "value": "NM",
+              "label": {
+                "en": "New Mexico",
+                "fr": "Nouveau-Mexique",
+                "de": "New Mexico",
+                "es": "Nuevo México"
+              }
+            },
+            {
+              "value": "NV",
+              "label": {
+                "en": "Nevada",
+                "fr": "Nevada",
+                "de": "Nevada",
+                "es": "Nevada"
+              }
+            },
+            {
+              "value": "OR",
+              "label": {
+                "en": "Oregon",
+                "fr": "Oregon",
+                "de": "Oregon",
+                "es": "Oregon"
+              }
+            },
+            {
+              "value": "SD",
+              "label": {
+                "en": "South Dakota",
+                "fr": "Dakota du Sud",
+                "de": "South Dakota",
+                "es": "Dakota del Sur"
+              }
+            },
+            {
+              "value": "UT",
+              "label": {
+                "en": "Utah",
+                "fr": "Utah",
+                "de": "Utah",
+                "es": "Utah"
+              }
+            },
+            {
+              "value": "WA",
+              "label": {
+                "en": "Washington",
+                "fr": "Washington",
+                "de": "Washington",
+                "es": "Washington"
+              }
+            },
+            {
+              "value": "WY",
+              "label": {
+                "en": "Wyoming",
+                "fr": "Wyoming",
+                "de": "Wyoming",
+                "es": "Wyoming"
+              }
+            }
+          ]
         },
         {
-          "key": "target",
-          "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
-          "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
-          ]
-        }
-      ],
-      "variables": [
-        {
-          "key": "target",
+          "key": "query",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
-        }
-      ]
-    }
-  ],
-  "scene_actions": [
-    {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
-      },
-      "timeout_seconds": 15,
-      "fields": [
+          "label": {
+            "en": "Name or number",
+            "fr": "Nom ou numéro",
+            "de": "Name oder Nummer",
+            "es": "Nombre o número"
+          },
+          "description": {
+            "en": "Optional: a station or county name (Snowbird, Summit), a number (1050) or a triplet. Empty, without state: around your house.",
+            "fr": "Facultatif : un nom de station ou de comté (Snowbird, Summit), un numéro (1050) ou un triplet. Vide, sans État : autour de votre maison.",
+            "de": "Optional: ein Stations- oder Countyname (Snowbird, Summit), eine Nummer (1050) oder ein Triplet. Leer, ohne Bundesstaat: rund um dein Haus.",
+            "es": "Opcional: un nombre de estación o de condado (Snowbird, Summit), un número (1050) o un triplete. Vacío, sin estado: alrededor de su casa."
+          },
+          "placeholder": {
+            "en": "e.g. Snowbird",
+            "fr": "ex. Snowbird",
+            "de": "z. B. Snowbird",
+            "es": "p. ej. Snowbird"
+          },
+          "required": false
+        },
         {
-          "key": "device",
+          "key": "radius",
           "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ],
-      "outputs": [
-        {
-          "key": "signalled",
-          "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "label": {
+            "en": "Distance around the house",
+            "fr": "Distance autour de la maison",
+            "de": "Entfernung um das Haus",
+            "es": "Distancia alrededor de la casa"
+          },
+          "description": {
+            "en": "100 km when empty.",
+            "fr": "100 km si vide.",
+            "de": "100 km, wenn leer.",
+            "es": "100 km si está vacío."
+          },
+          "required": false,
+          "options": [
+            {
+              "value": "50",
+              "label": {
+                "en": "50 km",
+                "fr": "50 km",
+                "de": "50 km",
+                "es": "50 km"
+              }
+            },
+            {
+              "value": "100",
+              "label": {
+                "en": "100 km",
+                "fr": "100 km",
+                "de": "100 km",
+                "es": "100 km"
+              }
+            },
+            {
+              "value": "200",
+              "label": {
+                "en": "200 km",
+                "fr": "200 km",
+                "de": "200 km",
+                "es": "200 km"
+              }
+            },
+            {
+              "value": "400",
+              "label": {
+                "en": "400 km",
+                "fr": "400 km",
+                "de": "400 km",
+                "es": "400 km"
+              }
+            }
+          ]
         }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "snowpack",
+      "label": {
+        "en": "SNOTEL snowpack",
+        "fr": "Enneigement SNOTEL",
+        "de": "SNOTEL-Schneedecke",
+        "es": "Nieve SNOTEL"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "Followed stations: snow depth, new snow, snow water and its median.",
+        "fr": "Stations suivies : hauteur de neige, neige fraîche, équivalent en eau et médiane.",
+        "de": "Verfolgte Stationen: Schneehöhe, Neuschnee, Schneewasser und Median.",
+        "es": "Estaciones seguidas: espesor de nieve, nieve nueva, agua de la nieve y mediana."
+      },
+      "icon": "cloud-snow",
+      "settings": [
+        {
+          "key": "station",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Station",
+            "fr": "Station",
+            "de": "Station",
+            "es": "Estación"
+          },
+          "description": {
+            "en": "Leave empty to list every station (10 at most); pick one for its details.",
+            "fr": "Laissez vide pour lister toutes les stations (10 au plus) ; choisissez-en une pour son détail.",
+            "de": "Leer lassen, um alle Stationen aufzulisten (höchstens 10); wähle eine für ihre Details.",
+            "es": "Déjelo vacío para listar todas las estaciones (10 como máximo); elija una para ver su detalle."
+          }
+        }
+      ]
     }
   ]
 }
