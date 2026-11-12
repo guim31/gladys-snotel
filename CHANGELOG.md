@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-12
+
 ### Added
 
 - One device per SNOTEL station of the USDA NRCS (western United States and
@@ -23,3 +25,6 @@ the notes of the version's GitHub Release.
 - "SNOTEL snowpack" dashboard widget: every station, or the details of one.
 - Documentation in English, French, German and Spanish.
 - Requires Gladys 5.3.0 or later (the store lists it for the United States).
+
+[Unreleased]: https://github.com/guim31/gladys-snotel/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/guim31/gladys-snotel/releases/tag/v1.0.0
