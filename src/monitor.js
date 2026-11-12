@@ -435,6 +435,9 @@ export class Monitor {
     if (down) {
       parts.push(render(STATUS, 'down'));
     }
+    if (this.failing.has('median') && !down) {
+      parts.push(render(STATUS, 'medianFailed'));
+    }
     if (this.failing.has('home')) {
       parts.push(render(STATUS, 'homeFailed'));
     }

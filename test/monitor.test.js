@@ -242,6 +242,7 @@ test('medians refused: the hourly values and the status stay, the station waits'
   assert.equal(v.fake.connectionStatus.connected, true);
   assert.equal(discovered(v, SNOWBIRD), undefined, 'not proposed before its median is known');
   assert.ok(discovered(v, SCAN), 'a station without snow water is proposed at once');
+  assert.match(v.fake.connectionStatus.message.en, /medians cannot be read yet/);
   refuseDaily = false;
   await cycle(v);
   const device = await create(v, SNOWBIRD);

@@ -19,6 +19,8 @@ export const READINGS = {
 export const STATUS = {
   en: {
     initFailed: 'Initialization failed, check the integration logs.',
+    medianFailed:
+      'The NRCS medians cannot be read yet: stations measuring snow water are proposed once they are.',
     down: 'The NRCS service (AWDB) does not answer: the readings will come back with it.',
     unknown: ({ names }) => `Unknown station: ${names}. Use "Find stations".`,
     homeFailed:
@@ -29,6 +31,8 @@ export const STATUS = {
   },
   fr: {
     initFailed: "L'initialisation a échoué, consultez les logs de l'intégration.",
+    medianFailed:
+      "Les médianes du NRCS ne peuvent pas encore être lues : les stations qui mesurent l'équivalent en eau seront proposées ensuite.",
     down: 'Le service du NRCS (AWDB) ne répond pas : les mesures reviendront avec lui.',
     unknown: ({ names }) => `Station inconnue : ${names}. Utilisez « Chercher des stations ».`,
     homeFailed:
@@ -40,6 +44,8 @@ export const STATUS = {
   },
   de: {
     initFailed: 'Initialisierung fehlgeschlagen, sieh dir die Protokolle der Integration an.',
+    medianFailed:
+      'Die Mediane des NRCS können noch nicht gelesen werden: Stationen mit Schneewassermessung werden danach angeboten.',
     down: 'Der Dienst des NRCS (AWDB) antwortet nicht: Die Messwerte kommen mit ihm zurück.',
     unknown: ({ names }) => `Unbekannte Station: ${names}. Nutze „Stationen suchen“.`,
     homeFailed:
@@ -50,6 +56,8 @@ export const STATUS = {
   },
   es: {
     initFailed: 'La inicialización ha fallado, consulte los registros de la integración.',
+    medianFailed:
+      'Las medianas del NRCS aún no se pueden leer: las estaciones que miden el agua de la nieve se propondrán después.',
     down: 'El servicio del NRCS (AWDB) no responde: las mediciones volverán con él.',
     unknown: ({ names }) => `Estación desconocida: ${names}. Use «Buscar estaciones».`,
     homeFailed:
