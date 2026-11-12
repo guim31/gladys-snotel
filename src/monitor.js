@@ -34,6 +34,7 @@ import { HOME_STATIONS, MAX_STATIONS, normalizeName } from './config.js';
 import { ELEMENTS, Awdb, newSnow24h } from './awdb.js';
 import {
   FEATURE_UNITS,
+  MAX_PERCENT,
   buildDevice,
   capabilities,
   convert,
@@ -398,16 +399,23 @@ export class Monitor {
   // --- Discovery and connection status -----------------------------------------
 
   discoveredDevices() {
-    return this.followed()
-      .filter((triplet) => !this.missing[triplet])
-      .map((triplet) => this.station(triplet))
-      .filter(Boolean)
-      .map((station) =>
-        buildDevice(this.gladys, station, {
-          language: this.config.language,
-          units: this.config.units,
-        }),
-      );
+    return (
+      this.followed()
+        .filter((triplet) => !this.missing[triplet])
+        .map((triplet) => this.station(triplet))
+        .filter(Boolean)
+        // Proposed once it is known whether NRCS has a median for the station
+        // (a later median would change the structure of a device just created).
+        .filter(
+          (station) => station.has || !station.elements?.WTEQ || station.hasMedian !== undefined,
+        )
+        .map((station) =>
+          buildDevice(this.gladys, station, {
+            language: this.config.language,
+            units: this.config.units,
+          }),
+        )
+    );
   }
 
   async publishDiscovered() {
@@ -550,40 +558,51 @@ export class Monitor {
   /** Metadata, hourly values and medians of the stations; resolves true when a value changed. */
   async refresh(triplets) {
     if (triplets.length === 0) {
+      // Nothing to ask: a past failure no longer says anything.
+      this.failing.delete('awdb');
       return false;
     }
     const now = this.now();
+    let changed = false;
+    let offsets;
     try {
       await this.refreshMetadata(triplets, now);
-      const offsets = new Map(
+      offsets = new Map(
         triplets
           .filter((triplet) => !this.missing[triplet])
           .map((triplet) => [triplet, this.station(triplet)?.tz ?? -8]),
       );
       if (offsets.size === 0) {
-        this.recovered('awdb', 'AWDB answers again');
+        this.failing.delete('awdb');
         return false;
       }
       const hourly = await this.api.hourly(offsets, now);
-      let changed = false;
       for (const triplet of offsets.keys()) {
         changed = this.fold(triplet, hourly.get(triplet) ?? {}) || changed;
       }
-      const needMedians =
-        now - this.mediansAt >= this.timings.medianMaxAgeMs ||
-        [...offsets.keys()].some((triplet) => this.stations[triplet]?.hasMedian === undefined);
-      if (needMedians) {
-        changed = (await this.refreshMedians(offsets, now)) || changed;
-      }
       this.recovered('awdb', 'AWDB answers again');
-      for (const triplet of offsets.keys()) {
-        changed = this.noteSilence(triplet) || changed;
-      }
-      return changed;
     } catch (err) {
       this.failed('awdb', 'warn', `AWDB unreachable: ${err.message}`);
       return false;
     }
+    for (const triplet of offsets.keys()) {
+      changed = this.noteSilence(triplet) || changed;
+    }
+    // The medians are a second request: its failure (a 403 of the AWDB
+    // firewall after the first one, typically) keeps the hourly values and the
+    // connection status, and is tried again at the next cycle.
+    const needMedians =
+      now - this.mediansAt >= this.timings.medianMaxAgeMs ||
+      [...offsets.keys()].some((triplet) => this.stations[triplet]?.hasMedian === undefined);
+    if (needMedians) {
+      try {
+        changed = (await this.refreshMedians(offsets, now)) || changed;
+        this.recovered('median', 'AWDB medians read again');
+      } catch (err) {
+        this.failed('median', 'warn', `Cannot read the AWDB medians yet: ${err.message}`);
+      }
+    }
+    return changed;
   }
 
   /** Metadata of the stations never asked or asked more than a day ago (one request). */
@@ -617,16 +636,17 @@ export class Monitor {
     const withSwe = new Map(
       [...offsets].filter(([triplet]) => capabilities(this.station(triplet)).snow_water_equivalent),
     );
-    this.mediansAt = now;
     for (const triplet of offsets.keys()) {
       if (!withSwe.has(triplet) && this.stations[triplet]) {
         this.stations[triplet].hasMedian ??= false;
       }
     }
     if (withSwe.size === 0) {
+      this.mediansAt = now;
       return false;
     }
     const daily = await this.api.dailyMedian(withSwe, now);
+    this.mediansAt = now;
     let changed = false;
     for (const triplet of withSwe.keys()) {
       const day = daily.get(triplet);
@@ -638,7 +658,12 @@ export class Monitor {
         station.hasMedian ??= false;
       }
       const reading = (this.readings[triplet] ??= {});
-      const pct = day && day.median > 0 ? Math.round((day.v / day.median) * 100) : null;
+      // Early in the season a tiny median makes huge ratios: capped at the
+      // display bound of the feature. No median (0 in summer): no value.
+      const pct =
+        day && day.median > 0
+          ? Math.min(MAX_PERCENT, Math.round((day.v / day.median) * 100))
+          : null;
       const next = pct === null ? null : { t: day.t, pct };
       changed ||= JSON.stringify(next) !== JSON.stringify(reading.median ?? null);
       reading.median = next;

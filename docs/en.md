@@ -28,7 +28,7 @@ the air temperature, every hour, from the public AWDB API of NRCS. No account, n
 
 ## Requirements
 
-- Gladys Assistant **5.1.0** or later.
+- Gladys Assistant **5.3.0** or later.
 - Internet access from Gladys: the integration reads `wcc.sc.egov.usda.gov`.
 - For "around my house": the location of your house in Gladys (Settings, Houses). The
   integration asks for it at installation (the "location" permission). It is only used inside
@@ -78,7 +78,7 @@ Copy the triplets into "Stations", then save.
 
 A feature only exists when the station measures it. **New snow** is the snow depth now minus
 the lowest depth of the 24 hours before (each hour smoothed with its neighbours, so one odd
-reading of the sensor does not count): new snow settles, so it is a lower bound of what fell.
+reading of the sensor does not count): new snow settles, so it is a lower bound of what fell, and the smoothing delays a snowfall of the last hour or two.
 The percentage of the median is only given when NRCS publishes a median for the station: young
 stations, in Alaska especially, have none. Early in the season, a small median makes large
 percentages.

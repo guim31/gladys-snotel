@@ -40,6 +40,9 @@ export const FEATURE_KEYS = {
   LAST_READING: 'last_reading',
 };
 
+// Display bound of the percentage of the median; higher ratios are capped.
+export const MAX_PERCENT = 300;
+
 // Unit of each measured feature in each unit system.
 export const FEATURE_UNITS = {
   metric: {
@@ -206,7 +209,7 @@ export function buildDevice(gladys, station, { language = 'fr', units = 'metric'
         ids.swe_percent_of_median,
         C.LEVEL_SENSOR,
         TYPES.LEVEL_SENSOR.LIQUID_LEVEL_PERCENT,
-        { unit: UNITS.PERCENT, min: 0, max: 300 },
+        { unit: UNITS.PERCENT, min: 0, max: MAX_PERCENT },
       ),
     );
   }

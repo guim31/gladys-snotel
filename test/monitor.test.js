@@ -228,3 +228,43 @@ test('deleting a device stops following a station only followed through it', asy
   await w.fake.deviceDeleted(device);
   assert.equal(discovered(w, SNOWBIRD), undefined);
 });
+
+test('medians refused: the hourly values and the status stay, the station waits', async (t) => {
+  const w = await createWorld({ connect: false });
+  t.after(() => w.app.stop());
+  const fetch = w.api.fetch;
+  let refuseDaily = true;
+  w.api.fetch = async (input) =>
+    refuseDaily && new URL(input).searchParams.get('duration') === 'DAILY'
+      ? { status: 403, text: async () => 'Forbidden' }
+      : fetch(input);
+  const v = await world(t, { stations: `${SNOWBIRD}, ${SCAN}` }, { api: w.api });
+  assert.equal(v.fake.connectionStatus.connected, true);
+  assert.equal(discovered(v, SNOWBIRD), undefined, 'not proposed before its median is known');
+  assert.ok(discovered(v, SCAN), 'a station without snow water is proposed at once');
+  refuseDaily = false;
+  await cycle(v);
+  const device = await create(v, SNOWBIRD);
+  assert.equal(last(v, device, 'swe_percent_of_median'), 60);
+});
+
+test('the percentage of the median is capped at the bound of the feature', async (t) => {
+  const api = (await import('./helpers/world.js')).createApi();
+  const day = api.daily.find((s) => s.stationTriplet === SNOWBIRD).data[0].values.at(-1);
+  day.value = 5;
+  day.median = 0.1;
+  const w = await world(t, { stations: SNOWBIRD }, { api });
+  const device = await create(w, SNOWBIRD);
+  assert.equal(last(w, device, 'swe_percent_of_median'), 300);
+});
+
+test('emptying the configuration clears a past AWDB failure', async (t) => {
+  const w = await world(t, { stations: SNOWBIRD });
+  w.api.down = 403;
+  await cycle(w);
+  assert.equal(w.fake.connectionStatus.connected, false);
+  w.api.down = false;
+  await w.fake.configUpdated({ stations: '' });
+  assert.equal(w.fake.connectionStatus.connected, true);
+  assert.match(w.fake.connectionStatus.message.en, /No station yet/);
+});

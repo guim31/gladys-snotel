@@ -24,7 +24,7 @@ Alaska, read every hour from the public AWDB API. No account, no key.
 
 ## Requirements
 
-- Gladys Assistant 5.1.0 or later, with Internet access (`wcc.sc.egov.usda.gov`).
+- Gladys Assistant 5.3.0 or later, with Internet access (`wcc.sc.egov.usda.gov`).
 - For "around my house": the location of your house in Gladys.
 
 ## Installation

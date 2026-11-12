@@ -22,3 +22,4 @@ the notes of the version's GitHub Release.
   around the house, with their triplet, elevation and distance.
 - "SNOTEL snowpack" dashboard widget: every station, or the details of one.
 - Documentation in English, French, German and Spanish.
+- Requires Gladys 5.3.0 or later (the store lists it for the United States).

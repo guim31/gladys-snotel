@@ -57,15 +57,16 @@ test('identity: name, image, cover, cloud transport, environment category', () =
   );
   assert.deepEqual(manifest.transports, ['cloud']);
   assert.deepEqual(manifest.categories, ['environment']);
+  assert.deepEqual(manifest.countries, ['US']);
 });
 
 test('"around my house" reads the house location: the manifest declares it', () => {
   assert.equal(manifest.location, true);
 });
 
-test('Gladys 5.1.0 at least: widgets', () => {
+test('Gladys 5.3.0 at least: widgets, and countries (a US service)', () => {
   const [major, minor] = minGladysVersion();
-  assert.ok(major > 5 || (major === 5 && minor >= 1), manifest.gladys_version);
+  assert.ok(major > 5 || (major === 5 && minor >= 3), manifest.gladys_version);
 });
 
 test('every manifest action has a handler, and vice versa', () => {

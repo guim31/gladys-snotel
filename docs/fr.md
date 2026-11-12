@@ -30,7 +30,7 @@ Pas de compte, pas de clé.
 
 ## Prérequis
 
-- Gladys Assistant **5.1.0** ou plus récent.
+- Gladys Assistant **5.3.0** ou plus récent.
 - Un accès à Internet depuis Gladys : l'intégration lit `wcc.sc.egov.usda.gov`.
 - Pour « Autour de ma maison » : la position de votre maison dans Gladys (Paramètres, Maisons).
   L'intégration la demande à l'installation (permission « location »). Elle ne sert que dans le
@@ -86,7 +86,7 @@ Copiez les triplets dans « Stations », puis enregistrez.
 Une fonctionnalité n'existe que si la station la mesure. La **neige fraîche** est la hauteur de
 neige actuelle moins la plus faible hauteur des 24 heures précédentes (chaque heure lissée avec
 ses voisines, pour qu'une mesure aberrante du capteur ne compte pas) : la neige fraîche se
-tasse, c'est donc une borne basse de ce qui est tombé. Le pourcentage de la médiane n'est donné
+tasse, c'est donc une borne basse de ce qui est tombé, et le lissage retarde d'une heure ou deux une chute toute récente. Le pourcentage de la médiane n'est donné
 que si le NRCS publie une médiane pour la station : les stations récentes, en Alaska surtout,
 n'en ont pas. En début de saison, une petite médiane donne de grands pourcentages.
 

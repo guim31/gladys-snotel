@@ -30,7 +30,7 @@ clave.
 
 ## Requisitos
 
-- Gladys Assistant **5.1.0** o posterior.
+- Gladys Assistant **5.3.0** o posterior.
 - Acceso a Internet desde Gladys: la integración lee `wcc.sc.egov.usda.gov`.
 - Para «Alrededor de mi casa»: la ubicación de su casa en Gladys (Ajustes, Casas). La
   integración la pide en la instalación (permiso «location»). Solo sirve dentro del contenedor
@@ -85,7 +85,7 @@ Copie los tripletes en «Estaciones» y guarde.
 Una función solo existe si la estación la mide. La **nieve nueva** es el espesor de nieve actual
 menos el espesor más bajo de las 24 horas anteriores (cada hora suavizada con sus vecinas, para
 que una medición aberrante del sensor no cuente): la nieve nueva se asienta, así que es un
-límite inferior de lo que ha caído. El porcentaje de la mediana solo se da si el NRCS publica
+límite inferior de lo que ha caído, y el suavizado retrasa una o dos horas una nevada muy reciente. El porcentaje de la mediana solo se da si el NRCS publica
 una mediana para la estación: las estaciones recientes, sobre todo en Alaska, no la tienen. A
 principio de temporada, una mediana pequeña da porcentajes grandes.
 

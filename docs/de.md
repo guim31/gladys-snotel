@@ -29,7 +29,7 @@ Lufttemperatur, stündlich, über die öffentliche AWDB-API des NRCS. Kein Konto
 
 ## Voraussetzungen
 
-- Gladys Assistant **5.1.0** oder neuer.
+- Gladys Assistant **5.3.0** oder neuer.
 - Internetzugang von Gladys aus: Die Integration liest `wcc.sc.egov.usda.gov`.
 - Für „Rund um mein Haus“: der Standort deines Hauses in Gladys (Einstellungen, Häuser). Die
   Integration fragt bei der Installation danach (Berechtigung „location“). Er dient nur im
@@ -86,7 +86,7 @@ Kopiere die Triplets in „Stationen“ und speichere.
 Eine Funktion gibt es nur, wenn die Station sie misst. **Neuschnee** ist die aktuelle
 Schneehöhe minus der geringsten Höhe der 24 Stunden davor (jede Stunde mit ihren Nachbarn
 geglättet, damit ein Ausreißer des Sensors nicht zählt): Neuschnee setzt sich, es ist also eine
-Untergrenze dessen, was gefallen ist. Das Prozent des Medians gibt es nur, wenn der NRCS einen
+Untergrenze dessen, was gefallen ist, und die Glättung verzögert frischen Schneefall um ein bis zwei Stunden. Das Prozent des Medians gibt es nur, wenn der NRCS einen
 Median für die Station veröffentlicht: Junge Stationen, vor allem in Alaska, haben keinen. Zu
 Saisonbeginn ergibt ein kleiner Median große Prozentwerte.
 
